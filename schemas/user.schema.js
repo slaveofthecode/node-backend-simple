@@ -5,4 +5,12 @@ const create = joi.object({
     password: joi.string().required().min(8).max(20),
 });
 
-export default create;
+const login = joi.object({
+    email: joi.string().email().required(),
+    password: joi.string().required().min(8).max(20),
+});
+
+export default {
+    create,
+    login,
+};

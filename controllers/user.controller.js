@@ -7,7 +7,7 @@ const create = async (req, res, next) => {
     try {
  
         // validate schema        
-        await validateHelper(schema, req.body);
+        await validateHelper(schema.create, req.body);
 
         // call service
         req.body.password = await bcrypt.hash(req.body.password, 10);
@@ -24,6 +24,23 @@ const create = async (req, res, next) => {
     }
 };
 
+const login = async (req, res, next) => {
+    try {
+        // validate schema        
+        await validateHelper(schema.login, req.body);
+
+        // call service
+        const token = await userServices.login(req.body);
+
+        // return token
+        res.send(token);
+        
+    } catch (error) {
+        next(error);
+    }
+}
+
 export default {
-    create
+    create,
+    login,
 };
