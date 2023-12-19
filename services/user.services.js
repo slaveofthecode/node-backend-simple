@@ -1,5 +1,5 @@
 import getPool from "../db/getPool.js";
-import errorsHelper from "../helpers/errors.helper";
+import errorsHelper from "../helpers/errors.helper.js";
 
 const create = async (user) => {
     try {
@@ -10,15 +10,15 @@ const create = async (user) => {
         const query = `INSERT INTO users (email, password) VALUES (?, ?)`;
         const values = [user.email, user.password];
 
-        const result = await pool.query(query, values);
-        console.log('result query', result);
+        const [ response ] = await pool.query(query, values);
+        // console.log('result query', result);
 
-        if (result[0].affectedRows !== 1) {
+        if (response.affectedRows !== 1) {
             errorsHelper.conflictError('Error la insertar usuario', 'CREATE_USER_ERROR_DB');
         }
 
         return {
-            id: result[0].insertId,
+            id: response.insertId,
             email: user.email
         };
 
