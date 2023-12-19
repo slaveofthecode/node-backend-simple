@@ -16,7 +16,7 @@ $ node -v
 # inside vscode
 
 - 1 - install libraries
-- - joi (schema validation)
+- - [Joi](https://joi.dev/) (schema validation)
 - - bcrypt (encrypt password)
 - - jsonwebtoken (generate token)
 - - mysql2 (connect to database)
