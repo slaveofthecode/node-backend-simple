@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import errorController from './controllers/error.controller.js';
+import routerNote from './router/note.router.js';
 import routerUser from './router/user.router.js';
 
 dotenv.config();
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 app.use(express.json()); // for parsing application/json
 
 app.use('/api/user', routerUser);
+app.use('/api/note', routerNote);
 
 app.use(errorController); // error handler when next(error) is called
 

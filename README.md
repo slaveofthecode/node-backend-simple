@@ -1,3 +1,5 @@
+https://www.youtube.com/watch?v=S1VCaQoZehQ
+
 # previous steps
 
 - 1 - install workbench MySQL
