@@ -21,6 +21,60 @@ const list = async (userId) => {
     }
 };
 
+const getById = async (id) => {
+    try {
+        
+        const pool = await getPool();
+
+        const query = `SELECT * FROM notes WHERE id = ? `;
+        const values = [id];
+
+        const [ note ] = await pool.query(query, values);
+
+        if ( !note.length ) {
+            errorsHelper.notFoundError('Note not found', 'NOTE_NOT_FOUND');
+        }
+
+        return note[0];
+
+    } catch (error) {
+        errorsHelper.internalServerError(error.message, 'GET_NOTE_ERROR_SERVICE');
+    }
+};
+
+const create = async (newNote, user) => {
+
+    try {
+
+        const {
+            title, text, category_id
+        } = newNote;
+
+        const pool = await getPool();
+        console.log('AAAA', title, text, category_id, user.id);
+        const query = ` INSERT INTO notes ( title, text, category_id, user_id )
+                            VALUES ( ?, ?, ?, ?) `;
+        const values = [title, text, category_id, user.id];
+
+        const [ response ] = await pool.query(query, values);
+
+        if ( response.affectedRows !== 1) {
+            errorsHelper.conflictError('Error insert new note', 'CREATE_NOTE_ERROR_DB');            
+        }
+
+        return {
+            id: response.insertId,
+        };
+
+        
+    } catch (error) {
+        errorsHelper.internalServerError(error.message, 'CREATE_NOTE_ERROR_SERVICE');
+    }
+
+}
+
 export default {
     list,
+    getById,
+    create
 };

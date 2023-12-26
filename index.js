@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import errorController from './controllers/error.controller.js';
+import routerIndex from './router/index.router.js';
 import routerNote from './router/note.router.js';
 import routerUser from './router/user.router.js';
 
@@ -10,12 +11,9 @@ const { SERVER_PORT } = process.env;
 
 const app = express();
 
-app.get('/', (req, res) => {
-    res.send('hello node-backend-simple project');
-});
-
 app.use(express.json()); // for parsing application/json
 
+app.use('/', routerIndex);
 app.use('/api/user', routerUser);
 app.use('/api/note', routerNote);
 
