@@ -10,7 +10,14 @@ const create = joi.object({
     category_id: joi.number().required()
 });
 
+const update = joi.object({
+    title: joi.string(),
+    text: joi.string(),
+    category_id: joi.number()
+});
+
 export default {
     getById,
-    create
+    create,
+    update
 };

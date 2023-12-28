@@ -7,5 +7,6 @@ const router = express.Router();
 router.get('/list', authMiddleware, noteController.list);
 router.get('/:id', authMiddleware, noteController.getById);
 router.post('/create', authMiddleware, noteController.create);
+router.patch('/update/:id', authMiddleware, noteController.update);
 
 export default router;

@@ -66,9 +66,28 @@ const create = async (req, res, next) => {
 
 }
 
+const update = async (req, res, next) => {
+
+    try {
+
+        await validateHelper(schema.update, req.body);
+
+        const noteUpdated = await noteServices.update(req.params.id, req.body);
+
+        console.log('NOTE UPDATED', noteUpdated);
+
+        return res.json(noteUpdated)
+
+        
+    } catch (error) {
+        next(error);
+    }
+
+}
 
 export default {
     list,
     getById,
-    create
+    create,
+    update
 };

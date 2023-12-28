@@ -51,7 +51,7 @@ const create = async (newNote, user) => {
         } = newNote;
 
         const pool = await getPool();
-        console.log('AAAA', title, text, category_id, user.id);
+        
         const query = ` INSERT INTO notes ( title, text, category_id, user_id )
                             VALUES ( ?, ?, ?, ?) `;
         const values = [title, text, category_id, user.id];
@@ -73,8 +73,35 @@ const create = async (newNote, user) => {
 
 }
 
+const update = async (id, noteUpdate) => {
+
+    try {
+
+        const keysNoteToUpdate = Object.keys(noteUpdate);
+        const valuesKeysNoteToUpdate = Object.values(noteUpdate);
+        
+        const pool = await getPool();
+
+        const query = `UPDATE notes
+                       SET
+                          ${ keysNoteToUpdate.map(field=> field + ' = ?') }
+                       WHERE
+                          id = ?`;                        
+        const values = [...valuesKeysNoteToUpdate,id];
+
+        const result = await pool.query(query, values);
+
+        console.log('RESULT', result);
+        
+    } catch (error) {
+        errorsHelper.internalServerError(error.message, 'UPDATE_NOTE_ERROR_SERVICE');
+    }
+
+}
+
 export default {
     list,
     getById,
-    create
+    create,
+    update
 };
