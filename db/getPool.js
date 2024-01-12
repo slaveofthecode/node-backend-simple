@@ -11,7 +11,7 @@ const {
     DB_NAME
 } = process.env;
 
-const getPool = async () => {
+const connectionToDB = async () => {
     try {
         
         if(pool) return pool;
@@ -42,4 +42,4 @@ const getPool = async () => {
     }
 };
 
-export default getPool;
+export default connectionToDB;

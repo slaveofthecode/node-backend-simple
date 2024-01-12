@@ -1,6 +1,6 @@
 import bycript from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import getPool from "../db/getPool.js";
+import connectionToDB from "../db/getPool.js";
 import errorsHelper from "../helpers/errors.helper.js";
 
 const {
@@ -8,10 +8,25 @@ const {
     JWT_EXPIRATION
 } = process.env;
 
+const list = async () => {
+
+    const query = `SELECT * FROM users`;
+
+    try {
+        const connDB = await connectionToDB(); 
+        const [ resultQuery ] = await connDB.query(query);
+        
+        return resultQuery;
+    } catch (error) {                
+        throw new Error(error);
+    }
+
+}
+
 const create = async (user) => {
     try {
         // connect DB
-        const pool = await getPool();
+        const pool = await connectionToDB();
 
         // insert user to DB
         const query = `INSERT INTO users (email, password) VALUES (?, ?)`;
@@ -38,7 +53,7 @@ const create = async (user) => {
 const login = async (user) => {
     try {
         // connect DB
-        const pool = await getPool();
+        const pool = await connectionToDB();
 
         // looking for user in DB
         const query = `SELECT * FROM users WHERE email = ?`;
@@ -78,5 +93,6 @@ const login = async (user) => {
 
 export default {
     create,
-    login
+    login,
+    list
 };
