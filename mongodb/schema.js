@@ -25,9 +25,8 @@ const createSchemas = () => {
 }
 
 const getModels = ()=> {
-
     const personModel = mongoose.model('person', schema.personSchema, 'persons');
-
+    
     return {
         personModel
     }

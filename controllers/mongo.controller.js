@@ -2,13 +2,10 @@ import mongoose from 'mongoose';
 import { createSchemas, getModels } from '../mongodb/schema.js';
 
 const reset = async (req, res, next) => {
-    // drop database
     mongoose.connection.dropDatabase();
 
-    // create schemas
     createSchemas();
 
-    // insert default data
     const { personModel } = getModels();
 
     await personModel.insertMany([
@@ -40,31 +37,111 @@ const reset = async (req, res, next) => {
 };
 
 const list = async (req, res, next) => {
-    const { personModel } = getModels();
-    const persons = await personModel.find();
 
-    res.json(persons);
+    const { personModel } = getModels();
+
+    try {
+        const allPersons = await personModel.find().sort({ createdAt: -1 });
+        res.json(allPersons);
+        
+    } catch (error) {
+        res.json({
+            message: 'There was an error',
+            details: error.message
+        })        
+    }
 };
 
 const create = async (req, res, next) => {
+    
     const { personModel } = getModels();
-    const newPerson = new personModel(req.body);
+    
+    try {
+        const newPerson = new personModel(req.body);
+        const personSaved = await newPerson.save();
+        res.json(personSaved);
+        
+    } catch (error) {
+        res.json({
+            message: 'There was an error',
+            details: error.message
+        })    
+    }
+};
 
-    const personSaved =  await newPerson.save();
+const update = async (req, res, next) => {
 
-    res.json(personSaved);
+    const { id } = req.params;
+    const { personModel } = getModels();
+
+    try {
+        
+        const personUpdate = await personModel.updateOne({ _id: id }, req.body );
+        
+        if (personUpdate.acknowledged === false)
+            return res.status(404).json({ message: 'Filed not allowed' });
+        if (personUpdate.matchedCount === 0)
+            return res.status(404).json({ message: 'Person not found' });
+        if (personUpdate.modifiedCount === 0)
+            return res.status(404).json({ message: 'Any field to update' });
+
+        res.json({
+            message: `${id} was updated`,
+            details: req.body
+        });
+
+
+    } catch (error) {        
+        res.json({
+            message: 'There was an error',
+            details: error.message
+        })
+    }
 
 };
 
-const update = async (req, resp, next) => {
+const remove = async (req, res, next) => {
+
+    const { id } = req.params;
+    const { personModel } = getModels();
+
+    try {
+        
+        const deletedPerson = await personModel.findByIdAndDelete(id);
+        if (!deletedPerson) 
+            return res.status(404).json({ message: 'Person not found' });
+        
+        res.json({
+            message: `${id} was removed`,
+            details: deletedPerson
+        });
+
+    } catch (error) {
+        res.json({
+            message: 'There was an error',
+            details: error.message
+        })
+    }
 
 };
 
-const remove = async (req, resp, next) => {
+const getById = async (req, res, next) => {
+    const { id } = req.params;
+    const { personModel } = getModels();
 
-};
+    try {
+        const person = await personModel.findById(id);
+        if (!person) 
+            return res.status(404).json({ message: 'Person not found' });
 
-const getById = async (req, resp, next) => {
+        res.json(person);
+
+    } catch (error) {
+        res.json({
+            message: 'There was an error',
+            details: error.message
+        })
+    }
 
 };
 
